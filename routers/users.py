@@ -16,10 +16,6 @@ class User(BaseModel):
     age: int
 
 
-class UserResponse(User):
-    sent_to_user: List[int] = []
-
-
 users_list = [
     User(id=1, name="Naruto", surname="Uzumaki", age=17),
     User(id=2, name="Edward", surname="Elric", age=15),
@@ -37,7 +33,7 @@ async def get_user_by_query(id: int):
     try:
         return [user for user in users_list if user.id == id][0]
     except IndexError:
-        raise HTTPException(404, "User not found")
+        raise HTTPException(400, "User not found")
 
 
 @router.get("/{id}", response_model=User)
@@ -45,7 +41,7 @@ async def get_user(id: int):
     try:
         return [user for user in users_list if user.id == id][0]
     except IndexError:
-        raise HTTPException(404, "User not found")
+        raise HTTPException(400, "User not found")
 
 
 @router.post("/", response_model=User, status_code=201)
@@ -64,7 +60,7 @@ async def update_user(request_user: User):
         users_list[user_index] = request_user
         return users_list[user_index]
     except StopIteration:
-        raise HTTPException(404, "User not found")
+        raise HTTPException(400, "User not found")
 
 
 @router.delete("/{id}", response_model=User)
@@ -74,4 +70,4 @@ async def delete_user(id: int):
         user_deleted = users_list.pop(user_index)
         return user_deleted
     except StopIteration:
-        raise HTTPException(404, "User not found")
+        raise HTTPException(400, "User not found")
